@@ -2,6 +2,13 @@ from rest_framework import serializers
 from django.conf import settings
 from django.contrib.auth import get_user_model
 
+from user.models import Wallet
+
+class WalletSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Wallet
+        fields = ("address", "balance",)
+
 
 class RegistrationSerializer(serializers.ModelSerializer):
 
@@ -12,7 +19,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         fields = ("first_name", "last_name", "email", "password", "password2")
         extra_kwargs = {
             "password": {"write_only": True},
-            "password2": {"write_only": True}
+            "password2": {"write_only": True},
         }
 
     def save(self):
@@ -42,6 +49,8 @@ class LoginSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    wallet = WalletSerializer()
+    
     class Meta:
         model = get_user_model()
-        fields = ("id", "email", "is_staff", "first_name", "last_name")
+        fields = ("id", "email", "is_staff", "first_name", "last_name", "wallet")

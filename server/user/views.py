@@ -56,10 +56,15 @@ def loginView(request):
 @rest_decorators.api_view(["POST"])
 @rest_decorators.permission_classes([])
 def registerView(request):
-    serializer = serializers.RegistrationSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
+    reg_serializer = serializers.RegistrationSerializer(data=request.data)
+    reg_serializer.is_valid(raise_exception=True)
 
-    user = serializer.save()
+    
+    wallet_serializer = serializers.WalletSerializer(data=request.data)
+    wallet_serializer.is_valid(raise_exception=True)
+    
+    user = reg_serializer.save()
+    wallet_serializer.save(user=user)    
 
     if user is not None:
         return response.Response("Registered!")
